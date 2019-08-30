@@ -1,0 +1,81 @@
+- name: "Installation NRPE et Nagios"
+  hosts: all
+  remote_user: root
+  
+  tasks:
+  - name: "Install nrpe et nagios package"
+    yum: 
+      name: 
+        - nrpe*
+        - nagios-plugins-*
+        - epel-release*
+      state: "latest"
+    async: 3600
+    poll: 0
+    register: yum_sleeper
+
+  - name: "ouverture de port du firewall pour NRPE 1/2"
+    firewalld:
+      service: nrpe
+      zone: public
+      immediate: yes
+      permanent: true
+      state: enabled
+
+  - name: "ouverture des ports du firewall 2/3"
+    firewalld:
+      port: 5666/udp
+      zone: public
+      immediate: yes
+      permanent: true
+      state: enabled
+      
+  - name: "ouverture des ports du firewall 3/3"
+    firewalld:
+      port: 5666/tcp
+      zone: public
+      immediate: yes
+      permanent: true
+      state: enabled
+      
+  - name: "Template nrpe.conf"
+    template:
+      src: "/opt/ansible/files/nrpe/etc-nrpe.conf"
+      dest: "/etc/snmp/nrpe.conf"
+      owner: "root"
+      group: "root"
+      mode: "755"
+      backup: "yes"
+      notify: Restart nrpe
+      
+  - name: "Template Nagios 32b"
+    template:
+      src: "/opt/ansible/files/nagios/"
+      dest: "/usr/lib/nagios/plugins/"
+      owner: "root"
+      group: "root"
+      mode: "755"
+      backup: "yes"
+      notify: Restart nrpe
+
+  - name: "Template Nagios 64b"
+    template:
+      src: "/opt/ansible/files/nagios/"
+      dest: "/usr/lib64/nagios/plugins/"
+      owner: "root"
+      group: "root"
+      mode: "755"
+      backup: "yes"
+      notify: Restart nrpe
+      
+  - name: "Activation du service nrpe"
+    service:
+      name: nrpe
+      enabled: yes
+      state: started
+     
+  handlers:
+  - name: Restart nrpe
+    service:
+      name: "nrpe"
+      state: "restarted"

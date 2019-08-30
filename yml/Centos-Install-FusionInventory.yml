@@ -1,0 +1,37 @@
+- name: "Installation Fusion Inventory"
+  hosts: all
+  remote_user: root
+  
+  tasks:
+  - name: Install de Fusion inventory
+    yum: 
+      name:
+        - fusioninventory-agent*
+        - fusioninventory-agent-task-inventory*
+        - epel-release*
+      state: "latest"
+
+  - name: "Mise en place de la Template snmpd.conf"
+    template:
+      src: "/opt/ansible/files/snmp/etc-agent.conf"
+      dest: "/etc/fusioninventory/agent.conf"
+      owner: "root"
+      group: "root"
+      mode: "755"
+      backup: "yes"
+    notify: Restart fusioninventory-agent
+    
+  - name: Enable snmpd service
+    service:
+      name: "fusioninventory-agent"
+      enabled: "started"
+      enabled: "yes"
+      state: "present"
+      notify: Restart fusioninventory-agent
+      
+  handlers:
+  - name: Restart fusioninventory-agent
+    action: 
+      service:
+        name: "fusioninventory-agent"
+        state: "restarted"

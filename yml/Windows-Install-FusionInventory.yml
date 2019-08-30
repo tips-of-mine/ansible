@@ -1,0 +1,52 @@
+---
+- name: "Installation FusionInventory"
+  hosts: WIN-QAR8IEP0187
+  gather_facts: no
+  become: false
+
+  tasks:
+  - name: "Creation du dossier AdminTools"
+    win_file:
+      path: C:\AdminTools
+      state: directory
+
+  tasks:
+  - name: "Creation du dossier FusionInventory"
+    win_file:
+      path: C:\AdminTools\FusionInventory
+      state: directory
+
+  - name: "Controle de FusionInventory"
+    win_stat:
+      path: "C:\\AdminTools\\FusionInventory\\npp.7.7.1.Installer.exe"
+    
+  - name: "Telechargement FusionInventory"
+    win_get_url:
+      url: "https://notepad-plus-plus.org/repository/7.x/7.7.1/npp.7.7.1.Installer.exe"
+      dest: "C:\\AdminTools\\FusionInventory\\npp.7.7.1.Installer.exe"
+    
+  - name: "Installation Notepad++"
+    win_package:
+      path: "C:\\AdminTools\\FusionInventory\\npp.7.7.1.Installer.exe"
+      arguments: '/S'
+      product_id: 'Notepad++'
+      creates_version: '7.7.1'
+      creates_path: C:\\Program Files (x86)\\FusionInventory++\\notepad++.exe'
+      state: present
+    #when: ansible_os_family == 'Windows'
+
+  - name: "Verifier la variable de chemin sur les hotes Windows"
+    win_shell: $Env:Path
+    register: path
+    changed_when: False
+    #when: ansible_os_family == 'Windows'
+
+  - name: "Ajouter le bloc-notes ++ a la variable de chemin sur les hotes Windows"
+    win_environment:
+      state: present
+      name: Path
+      value: '{{ path.stdout }};C:\Program Files (x86)\FusionInventory'
+      level: machine
+#    when: (path.stdout.find('Notepad++') == -1 ) and
+#          (ansible_os_family == 'Windows')
+...

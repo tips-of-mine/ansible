@@ -1,0 +1,27 @@
+- name: "Installation mises a jours Windows"
+  hosts: windows
+  tasks:
+  - name: "Installation mises a jours Windows"
+    win_updates:
+      category_names:
+        - Application
+        - Connectors
+        - CriticalUpdates
+        - DefinitionUpdates
+        - SecurityUpdates
+        - Tools
+        - UpdateRollups
+        - Updates
+      state: "installed"
+      log_path: "C:\Ansible_WU.txt"
+    
+  - name: Ensure WinRM starts when the system has settled and is ready to work reliably
+    win_service:
+      name: WinRM
+      start_mode: delayed
+
+# Optionally, you can increase the reboot_timeout to survive long updates during reboot
+  - name: Ensure we wait long enough for the updates to be applied during reboot
+    win_updates:
+      reboot: no
+      reboot_timeout: 3600

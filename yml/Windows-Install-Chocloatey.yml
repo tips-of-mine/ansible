@@ -1,0 +1,26 @@
+- name: Install Chocolatey
+  win_shell: |
+    Set-ExecutionPolicy Bypass;
+    Invoke-Expression (
+        (New-Object System.Net.WebClient).DownloadString(
+            'https://chocolatey.org/install.ps1'
+        )
+    )
+  args:
+    creates: 'C:\ProgramData\chocolatey'
+  when: ansible_os_family == 'Windows'
+
+- name: Check Path Variable on Windows hosts
+  win_shell: $Env:Path
+  register: path
+  changed_when: False
+  when: ansible_os_family == 'Windows'
+
+- name: Add Choco Path to Path Variable on Windows hosts
+  win_environment:
+    state: present
+    name: Path
+    value: '{{ path.stdout }};C:\ProgramData\chocolatey\bin'
+    level: machine
+  when: (path.stdout.find('chocolatey') == -1 ) and
+        (ansible_os_family == 'Windows')

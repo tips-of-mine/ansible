@@ -1,0 +1,9 @@
+- name: "Mise a jours sans restriction"
+  hosts: all
+  remote_user: root
+  
+  tasks:
+  - name: "Mise a jours sans restriction"
+    yum:
+      name: '*'
+      state: latest

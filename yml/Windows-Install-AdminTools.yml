@@ -1,0 +1,21 @@
+---
+- name: "Installation AdminTools"
+  hosts: WIN-QAR8IEP0187
+  gather_facts: no
+  become: false
+
+  tasks:
+  - name: "Creation du dossier AdminTools"
+    win_file:
+      path: C:\AdminTools
+      state: directory
+      
+  - name: "Mise a jour des scripts"
+    win_copy:
+      src: "/opt/ansible/files/nsclient/scripts/"
+      dest: "C:\\AdminTools\\"
+      backup: yes
+      force: yes
+    tags:
+    - scripts
+...

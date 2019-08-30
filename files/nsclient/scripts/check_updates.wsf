@@ -1,0 +1,89 @@
+<job>
+  <script language="VBScript">
+    
+    Set objShell = CreateObject("WScript.Shell")
+
+    Dim sysroot
+    sysroot = objShell.ExpandEnvironmentStrings("%systemroot%")
+
+    Set objExec = objShell.Exec("cmd.exe /c type " & sysroot & "\SoftwareDistribution\ReportingEvents.log")
+    results = LCase(objExec.StdOut.ReadAll)
+
+    res_split = Split(results, vbCrLf)
+
+    Dim regEx
+    Set regEx = New RegExp
+    regEx.Pattern = "(.)\S*\s*\S*\s*\S*\s*\d\s*(\d*)\s*\S*\s*\S*[0-9\s]*\S*\s*\S*\s*.*\t(.*)"
+    regEx.IgnoreCase = true
+
+    count = 1
+    ReDim arrDyn(1)
+
+    For Each zeile in res_split
+
+      firstsign = regEx.Replace(zeile, "$1")
+
+      If (firstsign = "{") Then
+
+      	number = regEx.Replace(zeile, "$2")
+        finish = regEx.Replace(zeile, "$3")
+
+      	If (number = 147) Then
+
+          count = count + 1
+          ReDim Preserve arrDyn(count + 1)
+	  arrDyn(count + 1) = finish
+        End If
+
+      End If
+
+    Next
+
+    mount_updates = -1
+
+    For x = 0 to UBound(arrDyn)
+
+      If x = UBound(arrDyn) Then
+	      end_array = Split(arrDyn(x), " ")
+	      mount_updates = end_array(UBound(end_array) - 1)
+      End If
+
+    Next
+
+    Set objSysInfo = CreateObject("Microsoft.Update.SystemInfo")
+    If objSysInfo.RebootRequired Then
+
+      reboot = " Reboot required!"
+      status = 1 
+     
+    Else
+
+      reboot = " No Reboot required!"
+      status = 0
+
+    End If
+
+    If mount_updates > 0 Then
+
+      If mount_updates = 1 Then
+
+        Wscript.echo("Warning: 1 Update detected!" & reboot)
+        status = 1
+
+      ElseIf mount_updates >= 2 Then
+	
+        Wscript.echo("Critical: " & mount_updates & " Updates detected!" & reboot)
+        status = 2
+
+      End If
+   
+    Else
+
+      Wscript.echo("OK, 0 Updates detected!" & reboot)
+
+    End If
+
+    Wscript.Quit(status)
+   
+  </script>
+</job>

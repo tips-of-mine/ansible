@@ -1,0 +1,57 @@
+---
+- name: "Installation NSClient"
+  hosts: WIN-QAR8IEP0187
+  gather_facts: no
+  become: false
+
+  tasks:
+  - name: "Creation du dossier AdminTools"
+    win_file:
+      path: C:\AdminTools
+      state: directory
+
+  tasks:
+  - name: "Creation du dossier NSCP"
+    win_file:
+      path: C:\AdminTools\NSCP
+      state: directory
+
+  - name: "Controle de NSClient++"
+    win_stat:
+      path: "C:\\AdminTools\\NSCP\\NSCP-0.5.2.35-Win32.msi"
+    register: msipackagestat
+
+  - name: "Telechargement NSClient++"
+    win_get_url:
+      url: "https://github.com/mickem/nscp/releases/download/0.5.2.35/NSCP-0.5.2.35-Win32.msi"
+      dest: "C:\\AdminTools\\NSCP\\NSCP-0.5.2.35-Win32.msi"
+    when: not msipackagestat.stat.exists
+  
+  - name: "Installation NSClient++"
+    win_package:
+      path: "C:\\AdminTools\\NSCP\\NSCP-0.5.2.35-Win32.msi"
+      state: present
+
+  - name: "Mise a jour de la configuration NSClient++"
+    win_template:
+      src: "/opt/ansible/files/nsclient/etc-nsclient.ini"
+      dest: "C:\\Program Files (x86)\\NSClient++\\nsclient.ini"
+      backup: yes
+      force: yes
+    tags:
+    - configuration
+
+  - name: "Mise a jour des scripts"
+    win_copy:
+      src: "/opt/ansible/files/nsclient/scripts/"
+      dest: "C:\\Program Files (x86)\\NSClient++\\scripts\\"
+      backup: yes
+      force: yes
+    tags:
+    - scripts
+
+  - name: restart nsclient
+    win_service:
+      name: nscp
+      state: restarted
+...

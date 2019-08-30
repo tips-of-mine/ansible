@@ -1,0 +1,52 @@
+---
+- name: "Installation Notepad++"
+  hosts: WIN-QAR8IEP0187
+  gather_facts: no
+  become: false
+
+  tasks:
+  - name: "Creation du dossier AdminTools"
+    win_file:
+      path: C:\AdminTools
+      state: directory
+
+  tasks:
+  - name: "Creation du dossier Notepad++"
+    win_file:
+      path: C:\AdminTools\Notepad
+      state: directory
+
+  - name: "Controle de Notepad"
+    win_stat:
+      path: "C:\\AdminTools\\Notepad\\npp.7.7.1.Installer.exe"
+    
+  - name: "Telechargement Notepad++"
+    win_get_url:
+      url: "https://notepad-plus-plus.org/repository/7.x/7.7.1/npp.7.7.1.Installer.exe"
+      dest: "C:\\AdminTools\\Notepad\\npp.7.7.1.Installer.exe"
+    
+  - name: "Installation Notepad++"
+    win_package:
+      path: "C:\\AdminTools\\Notepad\\npp.7.7.1.Installer.exe"
+      arguments: '/S'
+      product_id: 'Notepad++'
+      creates_version: '7.7.1'
+      creates_path: C:\\Program Files (x86)\\Notepad++\\notepad++.exe'
+      state: present
+    #when: ansible_os_family == 'Windows'
+
+  - name: "Verifier la variable de chemin sur les hotes Windows"
+    win_shell: $Env:Path
+    register: path
+    changed_when: False
+    #when: ansible_os_family == 'Windows'
+
+  - name: "Ajouter le bloc-notes ++ a la variable de chemin sur les hotes Windows"
+    win_environment:
+      state: present
+      name: Path
+      value: '{{ path.stdout }};C:\Program Files (x86)\Notepad++'
+      level: machine
+#    when: (path.stdout.find('Notepad++') == -1 ) and
+#          (ansible_os_family == 'Windows')
+...

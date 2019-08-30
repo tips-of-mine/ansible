@@ -1,0 +1,149 @@
+<job>
+<runtime>
+<description>
+Name:
+  check_windows_updates (nrpe_nt-plugin) 1.5 based on check_msupdates (nrpe_nt-plugin) 1.0
+
+License:
+  The nagios plugins come with ABSOLUTELY NO WARRANTY. You may redistribute
+  copies of the plugins under the terms of the GNU General Public License.
+  For more information about these matters, see the file named COPYING.
+
+Changelog / Contributors: 
+  2009 May - Albrecht Dress (albrecht.dress@arcor.de)
+  2007 June - Micha Jankowski (fooky@pjwstk.edu.pl) 
+  
+</description>
+  <named
+    name="h"
+    helpstring="Help"
+    type="simple"
+    required="false" 
+  />
+  <named
+    name="w"
+    helpstring="number of updates before warning status"
+    type="string"
+    required="false"
+  />
+  <named
+    name="c"
+    helpstring="number of updates before critical status "
+    type="string"
+    required="false"
+  />  
+</runtime>
+<script language="VBScript">
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Const's and Var's
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Cons for return val's
+Const intOK = 0
+Const intWarning = 1
+Const intCritical = 2
+Const intUnknown = 3
+
+' Cons for FSO
+Const ForReading = 1
+Const ForWriting = 2
+
+Dim updatesNames
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Params
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+If Wscript.Arguments.Named.Exists("h") Then
+	Wscript.Echo "Usage: check_windows_updates.wsf /w:1 /c:2"
+	Wscript.Echo "/w: - number of updates before warning status "
+	Wscript.Echo "/c: - number of updates before critical status "
+End If
+
+If Wscript.Arguments.Named.Exists("w") Then
+	intWarningLvl = Cint(Wscript.Arguments.Named("w"))
+Else
+	intWarningLvl = 0
+End If
+
+If Wscript.Arguments.Named.Exists("c") Then
+	intCriticLvl = Cint(Wscript.Arguments.Named("c"))
+Else
+	intCriticLvl = 0
+End If
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Main
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Set objAutoUpdate = CreateObject("Microsoft.Update.AutoUpdate")
+
+intResultDetect = objAutoUpdate.DetectNow
+If intResultDetect = 0 Then
+Else
+  WScript.Echo "WARNING: Unable to detect Automatic Updates."
+  Wscript.Quit(intUnknown)
+End If
+
+Set objSession = CreateObject("Microsoft.Update.Session")
+Set objSearcher = objSession.CreateUpdateSearcher
+
+
+intImportant = 0
+intOptional = 0
+
+Set objSysInfo = CreateObject("Microsoft.Update.SystemInfo")
+If objSysInfo.RebootRequired Then
+  Wscript.Echo "Reboot required."
+  Wscript.Quit(intWarning)
+End If
+
+Set result = objSearcher.Search("IsInstalled = 0 and IsHidden = 0")
+Set colDownloads = result.Updates
+
+For Each objEntry in colDownloads
+  if objEntry.AutoSelectOnWebSites Then
+    if intImportant = 0 Then
+      importantNames = objEntry.Title
+    else
+      importantNames = importantNames & "; " & objEntry.Title
+    End If
+    intImportant = intImportant + 1
+  Else
+    If intOptional = 0 Then
+      optionalNames = objEntry.Title
+    Else
+      optionalNames = optionalNames & "; " & objEntry.Title
+    End If
+    intOptional = intOptional + 1
+  End If
+Next
+
+If intImportant + intOptional > 0 Then
+   echoStr = "Updates: " & intImportant & " important, " & intOptional & " optional|"
+   If intImportant > 0 Then
+      echoStr = echoStr & "Important: " & importantNames
+      If intOptional > 0 Then
+        echoStr = echoStr & " (note: optional updates not listed)"
+      End If
+   Else
+      echoStr = echoStr & "Optional: " & optionalNames
+   End If
+   WScript.Echo echoStr
+
+	If intImportant > intCriticLvl Then
+		Wscript.Quit(intCritical)
+	End If
+
+	If intImportant > intWarningLvl Then
+		Wscript.Quit(intWarning)
+	End If
+	Wscript.Quit(intOK)  
+Else
+   WScript.Echo "No updates waiting or installing."
+   Wscript.Quit(intOK)
+End If
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' End
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+</script>
+</job>
+

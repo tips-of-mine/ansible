@@ -1,0 +1,22 @@
+- name: Install 7zip on Windows Hosts
+  win_package:
+    path: http://www.7-zip.org/a/7z1701-x64.msi
+    product_id: '{23170F69-40C1-2702-1701-000001000000}'
+    arguments: '/qb'
+    state: present
+  when: ansible_os_family == 'Windows'
+
+- name: Check Path Variable on Windows hosts
+  win_shell: $Env:Path
+  register: path
+  changed_when: False
+  when: ansible_os_family == 'Windows'
+
+- name: Add 7zip Path Variable on Windows hosts
+  win_environment:
+    state: present
+    name: Path
+    value: '{{ path.stdout }};C:\Program Files\7-Zip\'
+    level: machine
+  when: (path.stdout.find('7-Zip') == -1 ) and
+        (ansible_os_family == 'Windows')
