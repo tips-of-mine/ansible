@@ -1,0 +1,22 @@
+---
+- name: "Installation Divers"
+  hosts: WIN-QAR8IEP0187
+  gather_facts: no
+  become: false
+
+  tasks:
+    - name: "Installation du composant Divers"
+      win_feature:
+        name: 
+        - NFS-Client
+        - Telnet-Client
+        - NET-Framework-Features
+        - PowerShellRoot
+        - XPS-Viewer
+        - FS-SMBBW
+        - Simple-TCPIP
+        include_sub_features: yes
+        include_management_tools: yes
+        state: present
+      register: win_feature
+...

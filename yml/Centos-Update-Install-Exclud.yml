@@ -1,0 +1,10 @@
+- name: "Mise a jours avec restriction docker"
+  hosts: all
+  remote_user: root
+  
+  tasks:
+  - name: "Mise a jours avec restriction docker"
+    yum:
+      name: '*'
+      state: latest
+    exclude: docker*
