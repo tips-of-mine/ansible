@@ -29,8 +29,8 @@ dns-1
 dns-2
 
 [hyper-v]
-hyper-v-01
-hyper-v-02
+hyper-v-1
+hyper-v-2
 
 [windows:children]
 active-directory
