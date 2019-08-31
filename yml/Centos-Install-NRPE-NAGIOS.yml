@@ -1,5 +1,5 @@
 - name: "Installation NRPE et Nagios"
-  hosts: all
+  hosts: linux
   remote_user: root
   
   tasks:

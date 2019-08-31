@@ -2,7 +2,8 @@
 ansible_connection=local
 
 [tomcat]
-prod-haproxy
+prod-haproxy-1
+prod-haproxy-2
 
 [apache]
 prod-apache-1
@@ -11,15 +12,31 @@ prod-apache-2
 [mysql]
 prod-mysql-[1:2]
 
-[active-directory]
-active-directory-1
-
 [linux:children]
 apache
 mysql
 
+[active-directory]
+active-directory-1
+active-directory-2
+
+[dhcp]
+dhcp-1
+dhcp-2
+
+[dns]
+dns-1
+dns-2
+
+[hyper-v]
+hyper-v-01
+hyper-v-02
+
 [windows:children]
 active-directory
+dhcp
+dns
+hyper-v
 
 [windows:vars]
 ansible_user=administrateur

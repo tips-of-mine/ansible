@@ -1,5 +1,5 @@
 - name: "Installation SNMP"
-  hosts: all
+  hosts: linux
   remote_user: root
 
   tasks:

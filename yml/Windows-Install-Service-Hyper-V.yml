@@ -1,6 +1,6 @@
 ---
 - name: "Installation Hyper-V"
-  hosts: windows
+  hosts: hyper-v
   gather_facts: no
   become: false
 
