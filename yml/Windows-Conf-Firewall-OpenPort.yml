@@ -1,5 +1,9 @@
-- hosts: win-server
-  gather_facts: yes
+---
+- name: "Parametrage firewall"
+  hosts: windows
+  gather_facts: no
+  become: false
+  
   tasks:
   - name: Open firewall port 80 for the IIS web server on {{ inventory_hostname }}
         win_firewall_rule:
@@ -10,3 +14,4 @@
         action: Allow
         direction: In
         protocol: Tcp
+...

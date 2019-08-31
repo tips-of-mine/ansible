@@ -22,4 +22,7 @@ mysql
 active-directory
 
 [windows:vars]
+ansible_user=administrateur
+ansible_password=P@ssw0rd
 ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore

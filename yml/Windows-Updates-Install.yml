@@ -1,5 +1,9 @@
+---
 - name: "Installation mises a jours Windows"
   hosts: windows
+  gather_facts: no
+  become: false
+  
   tasks:
   - name: "Installation mises a jours Windows"
     win_updates:
@@ -25,3 +29,4 @@
     win_updates:
       reboot: no
       reboot_timeout: 3600
+...

@@ -1,6 +1,6 @@
 ---
 - name: "Installation Notepad++"
-  hosts: WIN-QAR8IEP0187
+  hosts: windows
   gather_facts: no
   become: false
 

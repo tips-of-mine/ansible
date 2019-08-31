@@ -1,6 +1,14 @@
-- name: Disable UAC via LUA
-  win_regedit:
-    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
-    name: EnableLUA
-    data: 0
-    type: dword
+---
+- name: "Desactivation du UAC"
+  hosts: windows
+  gather_facts: no
+  become: false
+  
+  tasks:
+  - name: Disable UAC via LUA
+    win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+      name: EnableLUA
+      data: 0
+      type: dword
+...

@@ -1,8 +1,9 @@
 ---
 - name: "Installation Divers"
-  hosts: WIN-QAR8IEP0187
+  hosts: windows
   gather_facts: no
   become: false
+
 
   tasks:
     - name: "Installation du composant Divers"

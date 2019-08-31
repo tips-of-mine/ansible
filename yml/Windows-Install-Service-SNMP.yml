@@ -1,6 +1,6 @@
 ---
 - name: "Installation SNMP"
-  hosts: WIN-QAR8IEP0187
+  hosts: windows
   gather_facts: no
   become: false
 
@@ -15,12 +15,12 @@
         state: present
       register: win_feature
     
-    - name: Replace SNMP communities and managers
+    - name: Remplacement de la communaute SNMP
       win_snmp:
         community_strings:
-          - FICHORGA-PRIV
-          - FICHORGA-PUB
+          - EXEMPLE-PRIV
+          - EXEMPLE-PUB
         permitted_managers:
-          - 120.4.0.71
+          - 10.59.1.11
         action: set
 ...

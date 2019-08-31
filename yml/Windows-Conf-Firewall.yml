@@ -1,7 +1,15 @@
-- name: Disable Domain Firewall
-  win_firewall:
-    state: disabled
+---
+- name: "Desactivation du firewall"
+  hosts: windows
+  gather_facts: no
+  become: false
+  
+  tasks:
+  - name: Disable Domain Firewall
+    win_firewall:
+      state: disabled
     profiles:
     - Domain
     - Private
     - Public
+...
