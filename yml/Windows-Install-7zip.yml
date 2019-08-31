@@ -1,3 +1,9 @@
+---
+- name: Install Apache from an MSI 
+  hosts: windows
+  gather_facts: no
+  become: false
+
 - name: Install 7zip on Windows Hosts
   win_package:
     path: http://www.7-zip.org/a/7z1701-x64.msi
@@ -20,3 +26,4 @@
     level: machine
   when: (path.stdout.find('7-Zip') == -1 ) and
         (ansible_os_family == 'Windows')
+...

@@ -1,6 +1,13 @@
-- name: Installing Google Chrome 
+---
+- name: "Installation de Google Chrome"
+  hosts: windows
+  gather_facts: no
+  become: false
+
+- name: "Installation de Google Chrome ""
   win_package:
     path: "https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B1EB7E3F2-AA3B-F8C2-DA6D-E5C558CD4690%7D%26lang%3Den%26browser%3D2%26usagestats%3D0%26appname%3DGoogle%2520Chrome%26needsadmin%3Dtrue%26ap%3Dx64-stable-statsdef_1%26installdataindex%3Ddefaultbrowser/update2/installers/ChromeSetup.exe"
     arguments: '/silent /install'
     product_id: "Google Chrome"
   when: ansible_os_family == 'Windows'
+...
