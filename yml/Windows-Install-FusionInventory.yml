@@ -1,5 +1,5 @@
 ---
-- name: "Installation FusionInventory"
+- name: Installation FusionInventory
   hosts: windows
   gather_facts: no
   become: false

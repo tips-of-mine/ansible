@@ -1,5 +1,5 @@
 ---
-- name: "Installation Divers"
+- name: Installation Divers
   hosts: windows
   gather_facts: no
   become: false

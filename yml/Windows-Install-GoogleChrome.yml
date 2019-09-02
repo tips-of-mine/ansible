@@ -1,5 +1,5 @@
 ---
-- name: "Installation de Google Chrome"
+- name: Installation de Google Chrome
   hosts: windows
   gather_facts: no
   become: false

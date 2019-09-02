@@ -1,5 +1,5 @@
 ---
-- name: "Execution script"
+- name: Execution script
   hosts: windows
   gather_facts: no
   become: false

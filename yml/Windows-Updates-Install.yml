@@ -1,5 +1,5 @@
 ---
-- name: "Installation mises a jours Windows"
+- name: Installation mises a jours Windows
   hosts: windows
   gather_facts: no
   become: false

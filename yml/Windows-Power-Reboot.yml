@@ -1,5 +1,5 @@
 ---
-- name: "Redemarrage des serveurs"
+- name: Redemarrage des serveurs
   hosts: windows
   gather_facts: no
   become: false

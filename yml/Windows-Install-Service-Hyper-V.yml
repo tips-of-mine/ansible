@@ -1,5 +1,5 @@
 ---
-- name: "Installation Hyper-V"
+- name: Installation Hyper-V
   hosts: hyper-v
   gather_facts: no
   become: false

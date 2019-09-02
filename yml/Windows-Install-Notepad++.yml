@@ -1,5 +1,5 @@
 ---
-- name: "Installation Notepad++"
+- name: Installation Notepad++
   hosts: windows
   gather_facts: no
   become: false

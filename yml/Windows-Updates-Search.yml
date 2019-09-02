@@ -1,5 +1,5 @@
 ---
-- name: "Recherche mise a jours Windows"
+- name: Recherche mise a jours Windows
   hosts: windows
   gather_facts: no
   become: false
