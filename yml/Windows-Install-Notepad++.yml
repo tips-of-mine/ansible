@@ -24,6 +24,19 @@
     win_get_url:
       url: "https://notepad-plus-plus.org/repository/7.x/7.7.1/npp.7.7.1.Installer.exe"
       dest: "C:\\AdminTools\\Notepad\\npp.7.7.1.Installer.exe"
+
+  - name: "Uninstall Notepad++"
+    win_package:
+      path: C:\Program Files\7-Zip\Uninstall.exe
+      product_id: 7-Zip
+      arguments: /S
+      state: absent
+
+  - name: Uninstall Notepad++"
+    win_package:
+      product_id: Notepad++
+      arguments: /S
+      state: absent
     
   - name: "Installation Notepad++"
     win_package:
