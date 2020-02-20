@@ -19,7 +19,7 @@
   - name: "Controle de NSClient++"
     win_stat:
       path: "C:\\AdminTools\\NSCP\\NSCP-0.5.2.35-Win32.msi"
-    register: msipackagestat
+    register: register: msipackagestat
 
   - name: "Telechargement NSClient++"
     win_get_url:
@@ -28,9 +28,10 @@
     when: not msipackagestat.stat.exists
   
   - name: "Installation NSClient++"
-    win_package:
+    win_msi:
       path: "C:\\AdminTools\\NSCP\\NSCP-0.5.2.35-Win32.msi"
-      state: present
+      wait: True
+    when: not msipackagestat.stat.exists
 
   - name: "Mise a jour de la configuration NSClient++"
     win_template:
