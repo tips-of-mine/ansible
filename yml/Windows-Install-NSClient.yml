@@ -19,7 +19,7 @@
   - name: "Controle de NSClient++"
     win_stat:
       path: "C:\\AdminTools\\NSCP\\NSCP-0.5.2.35-Win32.msi"
-    register: register: msipackagestat
+    register: msipackagestat
 
   - name: "Telechargement NSClient++"
     win_get_url:
